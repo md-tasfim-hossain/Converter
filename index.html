@@ -1,0 +1,2603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>PrecisionPDF Studio</title>
+
+<!-- PDF Library -->
+<script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+
+<style>
+:root {
+    --bg: #080d19;
+    --panel: #111a2b;
+    --panel2: #0c1424;
+    --border: #263650;
+    --primary: #6366f1;
+    --primary2: #8b5cf6;
+    --text: #f8fafc;
+    --muted: #94a3b8;
+    --success: #22c55e;
+    --danger: #ef4444;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    background:
+        radial-gradient(circle at top right, #312e8118, transparent 30%),
+        var(--bg);
+    color: var(--text);
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+}
+
+/* ================= HEADER ================= */
+
+header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    padding: 16px 5%;
+    border-bottom: 1px solid var(--border);
+    background: #080d19ee;
+    backdrop-filter: blur(15px);
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+}
+
+.brand {
+    font-size: 21px;
+    font-weight: 800;
+    letter-spacing: -0.6px;
+}
+
+.brand span {
+    color: #818cf8;
+}
+
+.status {
+    font-size: 12px;
+    color: #86efac;
+    background: #14532d44;
+    border: 1px solid #166534;
+    padding: 7px 12px;
+    border-radius: 20px;
+}
+
+/* ================= MAIN ================= */
+
+main {
+    max-width: 1450px;
+    margin: auto;
+    padding: 32px 20px;
+}
+
+.hero {
+    margin-bottom: 25px;
+}
+
+.hero h1 {
+    font-size: clamp(28px, 4vw, 42px);
+    margin: 0 0 8px;
+    letter-spacing: -1.5px;
+}
+
+.hero p {
+    color: var(--muted);
+    margin: 0;
+    line-height: 1.6;
+}
+
+/* ================= TABS ================= */
+
+.tabs {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    background: var(--panel2);
+    padding: 7px;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    margin-bottom: 22px;
+}
+
+.tab {
+    border: 0;
+    background: transparent;
+    color: var(--muted);
+    padding: 13px 10px;
+    border-radius: 9px;
+    font-weight: 700;
+}
+
+.tab:hover {
+    transform: none;
+    background: #1e293b;
+}
+
+.tab.active {
+    color: white;
+    background: linear-gradient(135deg, var(--primary), var(--primary2));
+}
+
+/* ================= PANELS ================= */
+
+.tool {
+    display: none;
+}
+
+.tool.active {
+    display: block;
+}
+
+.workspace {
+    display: grid;
+    grid-template-columns: minmax(300px, 0.9fr)
+                           minmax(300px, 1.1fr);
+    gap: 22px;
+}
+
+.panel {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 22px;
+    min-width: 0;
+}
+
+.panel-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 18px;
+}
+
+.panel-title h2 {
+    font-size: 18px;
+    margin: 0;
+}
+
+.tag {
+    font-size: 11px;
+    color: #c4b5fd;
+    background: #312e81;
+    padding: 5px 9px;
+    border-radius: 20px;
+}
+
+/* ================= FORM ================= */
+
+label {
+    display: block;
+    color: #cbd5e1;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+textarea {
+    width: 100%;
+    min-height: 300px;
+    resize: vertical;
+    padding: 16px;
+    background: #070c16;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    color: #c4b5fd;
+    font-family: "Courier New", monospace;
+    font-size: 13px;
+    line-height: 1.65;
+    outline: none;
+    tab-size: 2;
+}
+
+textarea:focus,
+select:focus,
+input:focus {
+    border-color: var(--primary);
+    outline: 2px solid #6366f133;
+}
+
+textarea::placeholder {
+    color: #64748b;
+}
+
+select,
+input[type="number"] {
+    width: 100%;
+    padding: 12px;
+    background: #080e1a;
+    color: white;
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    font-size: 14px;
+}
+
+button {
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    padding: 11px 15px;
+    border-radius: 9px;
+    border: 1px solid var(--border);
+    background: #1e293b;
+    color: white;
+    transition: .2s;
+}
+
+button:hover {
+    filter: brightness(1.18);
+    transform: translateY(-1px);
+}
+
+button:disabled {
+    opacity: .5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.primary {
+    background: linear-gradient(135deg, var(--primary), var(--primary2));
+    border: none;
+}
+
+.danger {
+    background: #7f1d1d;
+    border-color: #991b1b;
+}
+
+.editor-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 12px 0 22px;
+}
+
+.settings {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.field {
+    min-width: 0;
+}
+
+.full {
+    grid-column: 1 / -1;
+}
+
+.range-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+input[type="range"] {
+    width: 100%;
+    accent-color: #818cf8;
+}
+
+.range-value {
+    min-width: 48px;
+    text-align: right;
+    font-size: 13px;
+    color: #a5b4fc;
+}
+
+/* ================= PREVIEW ================= */
+
+.preview-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 14px;
+}
+
+.preview-toolbar span {
+    font-size: 12px;
+    color: var(--muted);
+}
+
+.preview-wrap {
+    background: #080e1a;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    padding: 14px;
+}
+
+iframe {
+    width: 100%;
+    height: 650px;
+    display: block;
+    border: 0;
+    background: white;
+    border-radius: 4px;
+}
+
+.export {
+    width: 100%;
+    padding: 15px;
+    font-size: 15px;
+    margin-top: 20px;
+}
+
+.help {
+    font-size: 12px;
+    line-height: 1.6;
+    color: var(--muted);
+    margin-top: 18px;
+}
+
+/* ================= PDF DROPZONE ================= */
+
+.dropzone {
+    border: 2px dashed #334155;
+    background: #080e1a;
+    border-radius: 14px;
+    padding: 40px 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: .2s;
+    margin-bottom: 18px;
+}
+
+.dropzone:hover,
+.dropzone.dragover {
+    border-color: var(--primary);
+    background: #312e8118;
+}
+
+.drop-icon {
+    font-size: 42px;
+    margin-bottom: 10px;
+}
+
+.dropzone h3 {
+    margin: 5px 0;
+}
+
+.dropzone p {
+    color: var(--muted);
+    font-size: 13px;
+    margin: 5px 0;
+}
+
+/* ================= FILE LIST ================= */
+
+.file-list {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+}
+
+.file-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: #0a1220;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 11px;
+}
+
+.file-number {
+    min-width: 28px;
+    height: 28px;
+    display: grid;
+    place-items: center;
+    background: #312e81;
+    color: #c4b5fd;
+    border-radius: 7px;
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.file-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.file-name {
+    font-size: 13px;
+    font-weight: 700;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.file-size {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 2px;
+}
+
+.remove-file {
+    padding: 7px 10px;
+    font-size: 12px;
+}
+
+/* ================= SPLIT ================= */
+
+.split-options {
+    display: grid;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.info-box {
+    padding: 13px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: #0a1220;
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.big-action {
+    width: 100%;
+    margin-top: 18px;
+    padding: 15px;
+    font-size: 15px;
+}
+
+/* ================= PROGRESS ================= */
+
+.progress {
+    height: 7px;
+    background: #1e293b;
+    border-radius: 20px;
+    overflow: hidden;
+    margin-top: 15px;
+    display: none;
+}
+
+.progress-bar {
+    width: 0%;
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary), var(--primary2));
+    transition: width .3s;
+}
+
+.status-message {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 10px;
+}
+
+/* ================= FOOTER ================= */
+
+footer {
+    text-align: center;
+    color: #64748b;
+    font-size: 12px;
+    padding: 25px;
+}
+
+/* ================= MOBILE ================= */
+
+@media (max-width: 850px) {
+
+    .workspace {
+        grid-template-columns: 1fr;
+    }
+
+    iframe {
+        height: 550px;
+    }
+
+    main {
+        padding: 20px 12px;
+    }
+
+    .panel {
+        padding: 16px;
+    }
+}
+
+@media (max-width: 500px) {
+
+    .tabs {
+        grid-template-columns: 1fr;
+    }
+
+    .settings {
+        grid-template-columns: 1fr;
+    }
+
+    .full {
+        grid-column: auto;
+    }
+
+    header {
+        padding: 14px 15px;
+    }
+
+    .status {
+        display: none;
+    }
+
+    .hero h1 {
+        font-size: 29px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <div class="brand">
+        Precision<span>PDF.</span>
+    </div>
+
+    <div class="status">
+        ● Browser-based
+    </div>
+</header>
+
+<main>
+
+<section class="hero">
+    <h1>Precision PDF Studio</h1>
+    <p>
+        Convert HTML to PDF, merge multiple PDFs,
+        or split PDF pages — directly in your browser.
+    </p>
+</section>
+
+
+<!-- ================= TABS ================= -->
+
+<div class="tabs">
+
+    <button class="tab active"
+        onclick="switchTool('htmlTool', this)">
+        📝 HTML → PDF
+    </button>
+
+    <button class="tab"
+        onclick="switchTool('mergeTool', this)">
+        📑 Merge PDF
+    </button>
+
+    <button class="tab"
+        onclick="switchTool('splitTool', this)">
+        ✂️ Split PDF
+    </button>
+
+</div>
+
+
+<!-- ========================================================= -->
+<!-- HTML TO PDF -->
+<!-- ========================================================= -->
+
+<section id="htmlTool" class="tool active">
+
+<div class="workspace">
+
+<!-- LEFT -->
+
+<section class="panel">
+
+<div class="panel-title">
+    <h2>HTML Editor</h2>
+    <span class="tag">SOURCE</span>
+</div>
+
+<label for="htmlCode">
+    Your HTML code
+</label>
+
+<textarea id="htmlCode"
+    spellcheck="false"
+    placeholder="Paste your complete HTML document here..."></textarea>
+
+<div class="editor-actions">
+
+<button class="primary"
+    onclick="renderPreview()">
+    Update Preview
+</button>
+
+<button onclick="loadExample()">
+    Load Example
+</button>
+
+<button onclick="clearEditor()">
+    Clear
+</button>
+
+</div>
+
+
+<div class="panel-title">
+
+<h2>PDF Settings</h2>
+
+<span class="tag">
+    PRECISION
+</span>
+
+</div>
+
+
+<div class="settings">
+
+<div class="field">
+
+<label>
+Paper size
+</label>
+
+<select id="paper"
+    onchange="renderPreview()">
+
+<option value="A4">
+A4 (210 × 297 mm)
+</option>
+
+<option value="A3">
+A3 (297 × 420 mm)
+</option>
+
+<option value="A5">
+A5 (148 × 210 mm)
+</option>
+
+<option value="Letter">
+Letter (8.5 × 11 in)
+</option>
+
+<option value="Legal">
+Legal (8.5 × 14 in)
+</option>
+
+</select>
+
+</div>
+
+
+<div class="field">
+
+<label>
+Orientation
+</label>
+
+<select id="orientation"
+    onchange="renderPreview()">
+
+<option value="portrait">
+Portrait
+</option>
+
+<option value="landscape">
+Landscape
+</option>
+
+</select>
+
+</div>
+
+
+<div class="field">
+
+<label>
+Margins (mm)
+</label>
+
+<input id="margin"
+    type="number"
+    min="0"
+    max="50"
+    step="0.5"
+    value="15"
+    onchange="renderPreview()">
+
+</div>
+
+
+<div class="field">
+
+<label>
+Print scale
+</label>
+
+<div class="range-row">
+
+<input id="scale"
+    type="range"
+    min="50"
+    max="150"
+    step="1"
+    value="100"
+    oninput="updateScale()">
+
+<span class="range-value"
+    id="scaleValue">
+100%
+</span>
+
+</div>
+
+</div>
+
+
+<div class="field full">
+
+<label>
+Print background graphics
+</label>
+
+<select id="background"
+    onchange="renderPreview()">
+
+<option value="on">
+Enabled
+</option>
+
+<option value="off">
+Disabled
+</option>
+
+</select>
+
+</div>
+
+</div>
+
+
+<p class="help">
+
+Tip: For accurate output, use CSS measurements in
+mm, cm, or inches for print layouts.
+
+</p>
+
+
+<button class="primary export"
+    onclick="exportPDF()">
+
+↓ &nbsp; Export / Save as PDF
+
+</button>
+
+</section>
+
+
+<!-- RIGHT -->
+
+<section class="panel">
+
+<div class="panel-title">
+
+<h2>
+Live Preview
+</h2>
+
+<span class="tag">
+PREVIEW
+</span>
+
+</div>
+
+
+<div class="preview-toolbar">
+
+<span id="previewInfo">
+Waiting for HTML...
+</span>
+
+<button onclick="renderPreview()">
+Refresh
+</button>
+
+</div>
+
+
+<div class="preview-wrap">
+
+<iframe
+    id="previewFrame"
+    title="HTML document preview"
+    sandbox="allow-scripts allow-same-origin">
+</iframe>
+
+</div>
+
+
+<p class="help">
+
+Preview is a visual approximation.
+Final page breaks, fonts and pagination
+are controlled by the browser print engine.
+
+</p>
+
+</section>
+
+</div>
+
+</section>
+
+
+
+<!-- ========================================================= -->
+<!-- MERGE PDF -->
+<!-- ========================================================= -->
+
+<section id="mergeTool" class="tool">
+
+<div class="workspace">
+
+<section class="panel">
+
+<div class="panel-title">
+
+<h2>
+Merge PDF Files
+</h2>
+
+<span class="tag">
+COMBINE
+</span>
+
+</div>
+
+
+<div class="dropzone"
+    id="mergeDropzone"
+    onclick="document.getElementById('mergeFiles').click()">
+
+<div class="drop-icon">
+📄
+</div>
+
+<h3>
+Drop PDF files here
+</h3>
+
+<p>
+or click to choose files
+</p>
+
+<p>
+Multiple PDF files supported
+</p>
+
+</div>
+
+
+<input
+    id="mergeFiles"
+    type="file"
+    accept="application/pdf,.pdf"
+    multiple
+    hidden
+    onchange="handleMergeFiles(this.files)">
+
+
+<div class="panel-title">
+
+<h2>
+Selected Files
+</h2>
+
+<span class="tag"
+    id="mergeCount">
+0 FILES
+</span>
+
+</div>
+
+
+<div id="mergeList"
+    class="file-list">
+
+<div class="info-box">
+No PDF files selected yet.
+</div>
+
+</div>
+
+
+<div class="progress"
+    id="mergeProgress">
+
+<div class="progress-bar"
+    id="mergeProgressBar">
+</div>
+
+</div>
+
+
+<div class="status-message"
+    id="mergeStatus">
+</div>
+
+
+<button
+    class="primary big-action"
+    id="mergeButton"
+    onclick="mergePDFs()"
+    disabled>
+
+📑 Merge & Download PDF
+
+</button>
+
+<button
+    class="danger big-action"
+    onclick="clearMergeFiles()">
+
+Clear All Files
+
+</button>
+
+</section>
+
+
+<section class="panel">
+
+<div class="panel-title">
+
+<h2>
+How Merge Works
+</h2>
+
+<span class="tag">
+INFO
+</span>
+
+</div>
+
+
+<div class="info-box">
+
+<strong>1.</strong>
+Select two or more PDF files.
+
+<br><br>
+
+<strong>2.</strong>
+Files will be merged in the order
+shown on the left.
+
+<br><br>
+
+<strong>3.</strong>
+Click
+<strong>Merge & Download PDF</strong>.
+
+<br><br>
+
+<strong>Privacy:</strong>
+Your PDFs are processed locally
+inside your browser.
+
+</div>
+
+
+<p class="help">
+
+The original PDF files are not modified.
+A new combined PDF is created for download.
+
+</p>
+
+</section>
+
+</div>
+
+</section>
+
+
+
+<!-- ========================================================= -->
+<!-- SPLIT PDF -->
+<!-- ========================================================= -->
+
+<section id="splitTool" class="tool">
+
+<div class="workspace">
+
+<section class="panel">
+
+<div class="panel-title">
+
+<h2>
+Split PDF
+</h2>
+
+<span class="tag">
+EXTRACT
+</span>
+
+</div>
+
+
+<div class="dropzone"
+    id="splitDropzone"
+    onclick="document.getElementById('splitFile').click()">
+
+<div class="drop-icon">
+✂️
+</div>
+
+<h3>
+Choose a PDF
+</h3>
+
+<p>
+Click or drag a PDF here
+</p>
+
+</div>
+
+
+<input
+    id="splitFile"
+    type="file"
+    accept="application/pdf,.pdf"
+    hidden
+    onchange="handleSplitFile(this.files[0])">
+
+
+<div id="splitFileInfo"
+    class="info-box">
+
+No PDF selected.
+
+</div>
+
+
+<div class="split-options">
+
+<div class="field">
+
+<label>
+Page range
+</label>
+
+<input
+    id="pageRange"
+    type="text"
+    placeholder="Example: 1-3, 5, 8-10">
+
+</div>
+
+
+<div class="info-box">
+
+<b>Examples:</b>
+
+<br>
+1-3 → Pages 1 to 3
+
+<br>
+5 → Only page 5
+
+<br>
+1-3, 7, 10-12 → Multiple ranges
+
+<br>
+all → Split every page separately
+
+</div>
+
+</div>
+
+
+<div class="progress"
+    id="splitProgress">
+
+<div class="progress-bar"
+    id="splitProgressBar">
+</div>
+
+</div>
+
+
+<div class="status-message"
+    id="splitStatus">
+</div>
+
+
+<button
+    class="primary big-action"
+    id="splitButton"
+    onclick="splitPDF()"
+    disabled>
+
+✂️ Split & Download
+
+</button>
+
+</section>
+
+
+<section class="panel">
+
+<div class="panel-title">
+
+<h2>
+Split Options
+</h2>
+
+<span class="tag">
+PAGES
+</span>
+
+</div>
+
+
+<div class="info-box">
+
+The split tool can extract selected pages
+from your PDF.
+
+<br><br>
+
+For example, if your PDF contains
+20 pages and you enter:
+
+<br><br>
+
+<b>1-5</b>
+
+<br>
+
+a new PDF containing pages 1–5
+will be downloaded.
+
+<br><br>
+
+You can also enter:
+
+<br>
+
+<b>1-3, 8, 10-12</b>
+
+<br>
+
+to extract several page ranges into
+one new PDF.
+
+</div>
+
+
+<p class="help">
+
+For maximum privacy, all PDF processing
+takes place locally in your browser.
+
+</p>
+
+</section>
+
+</div>
+
+</section>
+
+</main>
+
+
+<footer>
+
+PrecisionPDF Studio · HTML to PDF · Merge · Split
+<br><br>
+Your files stay in your browser.
+
+</footer>
+
+
+
+<script>
+
+/* =========================================================
+   TAB SYSTEM
+========================================================= */
+
+function switchTool(id, button) {
+
+    document.querySelectorAll(".tool")
+        .forEach(tool => tool.classList.remove("active"));
+
+    document.querySelectorAll(".tab")
+        .forEach(tab => tab.classList.remove("active"));
+
+    document.getElementById(id)
+        .classList.add("active");
+
+    button.classList.add("active");
+}
+
+
+
+/* =========================================================
+   HTML → PDF
+========================================================= */
+
+const editor =
+    document.getElementById("htmlCode");
+
+const frame =
+    document.getElementById("previewFrame");
+
+
+function getSettings() {
+
+    let margin =
+        Number(document.getElementById("margin").value);
+
+    if (!Number.isFinite(margin))
+        margin = 15;
+
+    margin =
+        Math.max(0, Math.min(50, margin));
+
+    return {
+
+        paper:
+            document.getElementById("paper").value,
+
+        orientation:
+            document.getElementById("orientation").value,
+
+        margin: margin,
+
+        scale:
+            Number(document.getElementById("scale").value),
+
+        background:
+            document.getElementById("background").value
+    };
+}
+
+
+function getPrintCSS(settings) {
+
+    return `
+
+        @page {
+
+            size:
+                ${settings.paper}
+                ${settings.orientation};
+
+            margin:
+                ${settings.margin}mm;
+        }
+
+
+        @media print {
+
+            html,
+            body {
+
+                width: auto !important;
+                height: auto !important;
+
+                margin: 0 !important;
+                padding: 0 !important;
+
+                overflow: visible !important;
+
+                -webkit-print-color-adjust:
+                    ${settings.background === "on"
+                        ? "exact"
+                        : "economy"};
+
+                print-color-adjust:
+                    ${settings.background === "on"
+                        ? "exact"
+                        : "economy"};
+            }
+
+
+            body {
+
+                zoom:
+                    ${settings.scale / 100};
+            }
+
+
+            *,
+            *::before,
+            *::after {
+
+                box-sizing:
+                    border-box;
+            }
+
+
+            img,
+            svg,
+            video,
+            canvas {
+
+                max-width:
+                    100%;
+            }
+
+
+            table {
+
+                max-width:
+                    100%;
+
+                border-collapse:
+                    collapse;
+            }
+
+
+            tr,
+            img,
+            figure {
+
+                break-inside:
+                    avoid;
+
+                page-break-inside:
+                    avoid;
+            }
+
+
+            h1,
+            h2,
+            h3,
+            h4 {
+
+                break-after:
+                    avoid;
+
+                page-break-after:
+                    avoid;
+            }
+
+
+            a {
+
+                color:
+                    inherit;
+
+                text-decoration:
+                    none;
+            }
+        }
+    `;
+}
+
+
+function renderPreview() {
+
+    const code =
+        editor.value;
+
+    if (!code.trim()) {
+
+        document.getElementById(
+            "previewInfo"
+        ).textContent =
+            "Paste HTML to preview";
+
+        frame.srcdoc = "";
+
+        return;
+    }
+
+
+    const settings =
+        getSettings();
+
+
+    const parser =
+        new DOMParser();
+
+
+    const doc =
+        parser.parseFromString(
+            code,
+            "text/html"
+        );
+
+
+    const style =
+        doc.createElement("style");
+
+
+    style.id =
+        "precision-pdf-print-style";
+
+
+    style.textContent =
+        getPrintCSS(settings);
+
+
+    doc.head.appendChild(style);
+
+
+    frame.srcdoc =
+        "<!DOCTYPE html>\n" +
+        doc.documentElement.outerHTML;
+
+
+    document.getElementById(
+        "previewInfo"
+    ).textContent =
+
+        settings.paper +
+        " · " +
+        settings.orientation +
+        " · " +
+        settings.margin +
+        " mm margins";
+}
+
+
+function updateScale() {
+
+    document.getElementById(
+        "scaleValue"
+    ).textContent =
+
+        document.getElementById(
+            "scale"
+        ).value + "%";
+
+    renderPreview();
+}
+
+
+function exportPDF() {
+
+    if (!editor.value.trim()) {
+
+        alert(
+            "Please paste HTML code first."
+        );
+
+        return;
+    }
+
+
+    const settings =
+        getSettings();
+
+
+    const doc =
+        new DOMParser()
+        .parseFromString(
+            editor.value,
+            "text/html"
+        );
+
+
+    const style =
+        doc.createElement("style");
+
+
+    style.textContent =
+        getPrintCSS(settings);
+
+
+    doc.head.appendChild(style);
+
+
+    const printWindow =
+        window.open("", "_blank");
+
+
+    if (!printWindow) {
+
+        alert(
+            "Please allow pop-ups for this page."
+        );
+
+        return;
+    }
+
+
+    printWindow.document.open();
+
+
+    printWindow.document.write(
+        "<!DOCTYPE html>\n" +
+        doc.documentElement.outerHTML
+    );
+
+
+    printWindow.document.close();
+
+
+    const doPrint =
+        () => {
+
+            printWindow.focus();
+
+            printWindow.print();
+        };
+
+
+    setTimeout(
+        doPrint,
+        1000
+    );
+}
+
+
+function clearEditor() {
+
+    if (!confirm(
+        "Clear all HTML code?"
+    )) return;
+
+
+    editor.value = "";
+
+    frame.srcdoc = "";
+
+    document.getElementById(
+        "previewInfo"
+    ).textContent =
+        "Waiting for HTML...";
+}
+
+
+function loadExample() {
+
+    editor.value = `<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<title>Sample Document</title>
+
+<style>
+
+body {
+
+    font-family:
+        Arial, sans-serif;
+
+    color:
+        #1e293b;
+
+    line-height:
+        1.6;
+}
+
+h1 {
+
+    color:
+        #4338ca;
+
+    border-bottom:
+        2px solid #6366f1;
+
+    padding-bottom:
+        10px;
+}
+
+table {
+
+    width:
+        100%;
+
+    border-collapse:
+        collapse;
+
+    margin-top:
+        20px;
+}
+
+th,
+td {
+
+    border:
+        1px solid #cbd5e1;
+
+    padding:
+        10px;
+
+    text-align:
+        left;
+}
+
+th {
+
+    background:
+        #eef2ff;
+}
+
+.box {
+
+    background:
+        #f1f5f9;
+
+    padding:
+        15px;
+
+    border-radius:
+        8px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h1>
+My PDF Document
+</h1>
+
+<p>
+This is a sample HTML document.
+</p>
+
+<div class="box">
+
+<strong>
+Precision PDF
+</strong>
+
+<p>
+Use CSS to control fonts,
+colors, tables and layout.
+</p>
+
+</div>
+
+<h2>
+Sample Table
+</h2>
+
+<table>
+
+<tr>
+<th>Subject</th>
+<th>Marks</th>
+</tr>
+
+<tr>
+<td>Physics</td>
+<td>90</td>
+</tr>
+
+<tr>
+<td>Chemistry</td>
+<td>95</td>
+</tr>
+
+<tr>
+<td>Mathematics</td>
+<td>92</td>
+</tr>
+
+</table>
+
+</body>
+
+</html>`;
+
+    renderPreview();
+}
+
+
+
+/* =========================================================
+   MERGE PDF
+========================================================= */
+
+let mergeFiles = [];
+
+
+function handleMergeFiles(files) {
+
+    const incoming =
+        Array.from(files)
+        .filter(file =>
+            file.type === "application/pdf" ||
+            file.name.toLowerCase().endsWith(".pdf")
+        );
+
+
+    mergeFiles =
+        mergeFiles.concat(incoming);
+
+
+    renderMergeList();
+}
+
+
+function renderMergeList() {
+
+    const list =
+        document.getElementById(
+            "mergeList"
+        );
+
+
+    const count =
+        document.getElementById(
+            "mergeCount"
+        );
+
+
+    count.textContent =
+        mergeFiles.length +
+        " FILE" +
+        (mergeFiles.length === 1
+            ? ""
+            : "S");
+
+
+    if (mergeFiles.length === 0) {
+
+        list.innerHTML =
+            `<div class="info-box">
+                No PDF files selected yet.
+            </div>`;
+
+        document.getElementById(
+            "mergeButton"
+        ).disabled = true;
+
+        return;
+    }
+
+
+    list.innerHTML = "";
+
+
+    mergeFiles.forEach(
+        (file, index) => {
+
+            const item =
+                document.createElement(
+                    "div"
+                );
+
+            item.className =
+                "file-item";
+
+
+            item.innerHTML = `
+
+                <div class="file-number">
+                    ${index + 1}
+                </div>
+
+                <div class="file-info">
+
+                    <div class="file-name">
+                        ${escapeHTML(file.name)}
+                    </div>
+
+                    <div class="file-size">
+                        ${formatBytes(file.size)}
+                    </div>
+
+                </div>
+
+                <button
+                    class="remove-file"
+                    onclick="removeMergeFile(${index})">
+
+                    Remove
+
+                </button>
+            `;
+
+
+            list.appendChild(item);
+        }
+    );
+
+
+    document.getElementById(
+        "mergeButton"
+    ).disabled =
+        mergeFiles.length < 2;
+}
+
+
+function removeMergeFile(index) {
+
+    mergeFiles.splice(
+        index,
+        1
+    );
+
+    renderMergeList();
+}
+
+
+function clearMergeFiles() {
+
+    mergeFiles = [];
+
+    document.getElementById(
+        "mergeFiles"
+    ).value = "";
+
+    renderMergeList();
+
+    document.getElementById(
+        "mergeStatus"
+    ).textContent = "";
+}
+
+
+async function mergePDFs() {
+
+    if (mergeFiles.length < 2) {
+
+        alert(
+            "Please select at least 2 PDF files."
+        );
+
+        return;
+    }
+
+
+    if (
+        typeof PDFLib ===
+        "undefined"
+    ) {
+
+        alert(
+            "PDF library could not load. Please check your internet connection."
+        );
+
+        return;
+    }
+
+
+    const button =
+        document.getElementById(
+            "mergeButton"
+        );
+
+
+    const progress =
+        document.getElementById(
+            "mergeProgress"
+        );
+
+
+    const bar =
+        document.getElementById(
+            "mergeProgressBar"
+        );
+
+
+    const status =
+        document.getElementById(
+            "mergeStatus"
+        );
+
+
+    button.disabled = true;
+
+    progress.style.display =
+        "block";
+
+    bar.style.width =
+        "0%";
+
+    status.textContent =
+        "Preparing PDF...";
+
+
+    try {
+
+        const mergedPdf =
+            await PDFLib.PDFDocument.create();
+
+
+        for (
+            let i = 0;
+            i < mergeFiles.length;
+            i++
+        ) {
+
+            status.textContent =
+                "Processing " +
+                (i + 1) +
+                " of " +
+                mergeFiles.length +
+                ": " +
+                mergeFiles[i].name;
+
+
+            const bytes =
+                await mergeFiles[i]
+                    .arrayBuffer();
+
+
+            const pdf =
+                await PDFLib.PDFDocument
+                    .load(bytes);
+
+
+            const pages =
+                await mergedPdf.copyPages(
+                    pdf,
+                    pdf.getPageIndices()
+                );
+
+
+            pages.forEach(
+                page =>
+                    mergedPdf.addPage(page)
+            );
+
+
+            bar.style.width =
+                (
+                    ((i + 1) /
+                    mergeFiles.length) *
+                    100
+                ) + "%";
+        }
+
+
+        status.textContent =
+            "Creating download...";
+
+
+        const finalBytes =
+            await mergedPdf.save();
+
+
+        downloadBlob(
+            new Blob(
+                [finalBytes],
+                {
+                    type:
+                        "application/pdf"
+                }
+            ),
+            "merged-document.pdf"
+        );
+
+
+        status.textContent =
+            "✓ PDF merged successfully.";
+
+
+    } catch (error) {
+
+        console.error(error);
+
+        status.textContent =
+            "Error: Could not merge PDF.";
+
+        alert(
+            "Could not merge the selected PDF files."
+        );
+
+    } finally {
+
+        button.disabled = false;
+    }
+}
+
+
+
+/* =========================================================
+   SPLIT PDF
+========================================================= */
+
+let splitFile =
+    null;
+
+
+function handleSplitFile(file) {
+
+    if (!file) return;
+
+
+    if (
+        file.type !==
+        "application/pdf" &&
+        !file.name.toLowerCase()
+            .endsWith(".pdf")
+    ) {
+
+        alert(
+            "Please select a PDF file."
+        );
+
+        return;
+    }
+
+
+    splitFile =
+        file;
+
+
+    document.getElementById(
+        "splitFileInfo"
+    ).innerHTML = `
+
+        <strong>
+            ${escapeHTML(file.name)}
+        </strong>
+
+        <br>
+
+        ${formatBytes(file.size)}
+
+        <br><br>
+
+        PDF ready for splitting.
+
+    `;
+
+
+    document.getElementById(
+        "splitButton"
+    ).disabled = false;
+
+
+    document.getElementById(
+        "splitStatus"
+    ).textContent = "";
+}
+
+
+async function splitPDF() {
+
+    if (!splitFile) {
+
+        alert(
+            "Please select a PDF first."
+        );
+
+        return;
+    }
+
+
+    if (
+        typeof PDFLib ===
+        "undefined"
+    ) {
+
+        alert(
+            "PDF library could not load. Please check your internet connection."
+        );
+
+        return;
+    }
+
+
+    const rangeText =
+        document.getElementById(
+            "pageRange"
+        ).value.trim();
+
+
+    try {
+
+        const bytes =
+            await splitFile
+                .arrayBuffer();
+
+
+        const sourcePdf =
+            await PDFLib.PDFDocument
+                .load(bytes);
+
+
+        const totalPages =
+            sourcePdf.getPageCount();
+
+
+        let pages;
+
+
+        if (
+            rangeText.toLowerCase() ===
+            "all"
+        ) {
+
+            pages =
+                Array.from(
+                    {
+                        length:
+                            totalPages
+                    },
+                    (_, i) => i
+                );
+
+        } else {
+
+            pages =
+                parsePageRanges(
+                    rangeText,
+                    totalPages
+                );
+        }
+
+
+        if (pages.length === 0) {
+
+            alert(
+                "No valid pages selected."
+            );
+
+            return;
+        }
+
+
+        const button =
+            document.getElementById(
+                "splitButton"
+            );
+
+
+        const progress =
+            document.getElementById(
+                "splitProgress"
+            );
+
+
+        const bar =
+            document.getElementById(
+                "splitProgressBar"
+            );
+
+
+        const status =
+            document.getElementById(
+                "splitStatus"
+            );
+
+
+        button.disabled = true;
+
+        progress.style.display =
+            "block";
+
+        bar.style.width =
+            "10%";
+
+
+        status.textContent =
+            "Creating new PDF...";
+
+
+        const newPdf =
+            await PDFLib.PDFDocument
+                .create();
+
+
+        const copiedPages =
+            await newPdf.copyPages(
+                sourcePdf,
+                pages
+            );
+
+
+        copiedPages.forEach(
+            page =>
+                newPdf.addPage(page)
+        );
+
+
+        bar.style.width =
+            "80%";
+
+
+        const finalBytes =
+            await newPdf.save();
+
+
+        bar.style.width =
+            "100%";
+
+
+        downloadBlob(
+            new Blob(
+                [finalBytes],
+                {
+                    type:
+                        "application/pdf"
+                }
+            ),
+            "split-pages.pdf"
+        );
+
+
+        status.textContent =
+            "✓ PDF split successfully.";
+
+
+    } catch (error) {
+
+        console.error(error);
+
+        document.getElementById(
+            "splitStatus"
+        ).textContent =
+            "Error: Invalid page range or PDF.";
+
+
+        alert(
+            "Could not split this PDF. Please check the page range."
+        );
+
+    } finally {
+
+        document.getElementById(
+            "splitButton"
+        ).disabled = false;
+    }
+}
+
+
+function parsePageRanges(
+    text,
+    totalPages
+) {
+
+    if (!text) {
+
+        throw new Error(
+            "Empty page range"
+        );
+    }
+
+
+    const result =
+        new Set();
+
+
+    const parts =
+        text.split(",");
+
+
+    for (
+        const rawPart of parts
+    ) {
+
+        const part =
+            rawPart.trim();
+
+
+        if (!part) continue;
+
+
+        if (
+            part.includes("-")
+        ) {
+
+            const range =
+                part.split("-");
+
+
+            if (range.length !== 2) {
+
+                throw new Error(
+                    "Invalid range"
+                );
+            }
+
+
+            let start =
+                Number(range[0].trim());
+
+
+            let end =
+                Number(range[1].trim());
+
+
+            if (
+                !Number.isInteger(start) ||
+                !Number.isInteger(end)
+            ) {
+
+                throw new Error(
+                    "Invalid number"
+                );
+            }
+
+
+            if (start > end) {
+
+                [
+                    start,
+                    end
+                ] =
+                [
+                    end,
+                    start
+                ];
+            }
+
+
+            if (
+                start < 1 ||
+                end > totalPages
+            ) {
+
+                throw new Error(
+                    "Page out of range"
+                );
+            }
+
+
+            for (
+                let i = start;
+                i <= end;
+                i++
+            ) {
+
+                result.add(
+                    i - 1
+                );
+            }
+
+
+        } else {
+
+            const page =
+                Number(part);
+
+
+            if (
+                !Number.isInteger(page) ||
+                page < 1 ||
+                page > totalPages
+            ) {
+
+                throw new Error(
+                    "Invalid page"
+                );
+            }
+
+
+            result.add(
+                page - 1
+            );
+        }
+    }
+
+
+    return Array.from(
+        result
+    ).sort(
+        (a, b) => a - b
+    );
+}
+
+
+
+/* =========================================================
+   DRAG & DROP
+========================================================= */
+
+function setupDropzone(
+    zoneId,
+    inputId,
+    handler
+) {
+
+    const zone =
+        document.getElementById(
+            zoneId
+        );
+
+
+    const input =
+        document.getElementById(
+            inputId
+        );
+
+
+    [
+        "dragenter",
+        "dragover"
+    ].forEach(
+        eventName => {
+
+            zone.addEventListener(
+                eventName,
+                event => {
+
+                    event.preventDefault();
+
+                    zone.classList.add(
+                        "dragover"
+                    );
+                }
+            );
+        }
+    );
+
+
+    [
+        "dragleave",
+        "drop"
+    ].forEach(
+        eventName => {
+
+            zone.addEventListener(
+                eventName,
+                event => {
+
+                    event.preventDefault();
+
+                    zone.classList.remove(
+                        "dragover"
+                    );
+                }
+            );
+        }
+    );
+
+
+    zone.addEventListener(
+        "drop",
+        event => {
+
+            const files =
+                event.dataTransfer.files;
+
+
+            handler(files);
+
+        }
+    );
+}
+
+
+setupDropzone(
+    "mergeDropzone",
+    "mergeFiles",
+    files =>
+        handleMergeFiles(files)
+);
+
+
+setupDropzone(
+    "splitDropzone",
+    "splitFile",
+    files => {
+
+        if (files.length) {
+
+            handleSplitFile(
+                files[0]
+            );
+        }
+    }
+);
+
+
+
+/* =========================================================
+   HELPERS
+========================================================= */
+
+function formatBytes(bytes) {
+
+    if (bytes === 0)
+        return "0 Bytes";
+
+
+    const units =
+        [
+            "Bytes",
+            "KB",
+            "MB",
+            "GB"
+        ];
+
+
+    const i =
+        Math.floor(
+            Math.log(bytes) /
+            Math.log(1024)
+        );
+
+
+    return (
+        parseFloat(
+            (
+                bytes /
+                Math.pow(1024, i)
+            ).toFixed(2)
+        ) +
+        " " +
+        units[i]
+    );
+}
+
+
+function downloadBlob(
+    blob,
+    filename
+) {
+
+    const url =
+        URL.createObjectURL(blob);
+
+
+    const a =
+        document.createElement("a");
+
+
+    a.href =
+        url;
+
+    a.download =
+        filename;
+
+
+    document.body.appendChild(a);
+
+    a.click();
+
+    a.remove();
+
+
+    setTimeout(
+        () =>
+            URL.revokeObjectURL(url),
+        1000
+    );
+}
+
+
+function escapeHTML(text) {
+
+    const div =
+        document.createElement(
+            "div"
+        );
+
+    div.textContent =
+        text;
+
+    return div.innerHTML;
+}
+
+
+
+/* =========================================================
+   INITIALIZE
+========================================================= */
+
+loadExample();
+
+renderMergeList();
+
+</script>
+
+</body>
+</html>
